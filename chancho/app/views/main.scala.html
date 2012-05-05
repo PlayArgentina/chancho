@@ -35,6 +35,12 @@
             }
             
             chatSocket.onmessage = receiveEvent
+            
+            var i = 0;
+            setInterval(function() {
+            	chatSocket.send("hola " + i++);
+            }, 5000);
+            
         })
     
     </script>

@@ -7,13 +7,16 @@ import play.api.libs.json.JsValue
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.iteratee.PushEnumerator
 
-case object tick
+case class Tick
+case class Read(val text: String)
 
-class ClockActor(consumer: Iteratee[String, _], producer: PushEnumerator[String]) extends Actor {
+class ClockActor(producer: PushEnumerator[String]) extends Actor {
 
   val log = Logging(context.system, this)
   def receive = {
-    case "tick" =>
-      producer.push(Math.random + "")
+    case Tick =>
+      producer.push("Server: " + Math.random)
+    case Read(t) =>
+      producer.push("client: " + t)
   }
 }
