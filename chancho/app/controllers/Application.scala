@@ -11,8 +11,18 @@ import akka.actor.Props
 import akka.util.Duration
 import actors.Read
 import actors.Tick
+import akka.actor.ActorPath
+import actors.ClockActor
+import java.util.ArrayList
+import actors.ClockActor
+import scala.collection.mutable.MutableList
+import actors.Send
+import actors.Send
+import akka.actor.ActorRef
 
 object Application extends Controller {
+
+  def actors = MutableList[ActorRef]()
 
   def main = Action { implicit request =>
     Ok(views.html.main("Your new application is ready."))
@@ -23,6 +33,7 @@ object Application extends Controller {
 
       val producer = Enumerator.imperative[String]()
       val clientWebSocketHandler = Akka.system.actorOf(Props(new ClockActor(producer)), name = "client-" + Math.random)
+      this.actors += clientWebSocketHandler
       val consumer = Iteratee.foreach[String] { event =>
         clientWebSocketHandler ! Read(event)
       }
@@ -33,6 +44,12 @@ object Application extends Controller {
     }
 
     (ws)
+  }
+
+  def broadcast(message: String): Unit = {
+    this.actors.foreach { a =>
+      a ! Send(message)
+    }
   }
 
 }
