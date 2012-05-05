@@ -19,8 +19,10 @@ import scala.collection.mutable.MutableList
 import actors.Send
 import actors.Send
 import akka.actor.ActorRef
+import akka.actor.Actor
+import akka.routing.Broadcast
 
-object Application extends Controller {
+object Application extends Controller with Actor{
 
   def actors = MutableList[ActorRef]()
 
@@ -45,11 +47,12 @@ object Application extends Controller {
 
     (ws)
   }
-
-  def broadcast(message: String): Unit = {
-    this.actors.foreach { a =>
-      a ! Send(message)
-    }
+  
+  def receive = {
+    case Broadcast(msg) =>
+      this.actors.foreach { a =>
+      	a ! Send("lala")
+      }
   }
 
 }

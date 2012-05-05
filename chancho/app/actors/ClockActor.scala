@@ -7,8 +7,10 @@ import play.api.libs.json.JsValue
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.iteratee.PushEnumerator
 import play.libs.Akka
+import akka.routing.Broadcast
 
 case class Send(val text: String)
+case class BroadCast(val text: String)
 case class Tick
 case class Read(val text: String)
 
@@ -21,6 +23,6 @@ class ClockActor(producer: PushEnumerator[String]) extends Actor {
     case Send(t) =>
       producer.push(t)
     case Read(t) =>
-      sender ! broadcast(t) //not working
+      sender ! Broadcast(t) //not working
   }
 }
