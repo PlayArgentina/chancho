@@ -22,7 +22,7 @@
             var chatSocket = new WS("@routes.Application.connect().webSocketURL()")
             
             var receiveEvent = function(event) {
-                var data = JSON.parse(event.data)
+                var data = event.data;//JSON.parse(event.data)
                 
                 // Handle errors
                 if(data.error) {
